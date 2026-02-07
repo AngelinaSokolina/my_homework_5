@@ -81,7 +81,7 @@ def test_transaction_descriptions(transactions: List[Dict[str, Any]]) -> None:
     assert next(descriptions) == "Перевод организации"
 
 
-def test_card_number_generator():
+def test_card_number_generator() -> None:
     """Тест генератора диапозона карт"""
     expected_result = ["0000 0000 0000 0001", "0000 0000 0000 0002"]
     result = card_number_generator(1, 2)

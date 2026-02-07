@@ -1,12 +1,12 @@
 from functools import wraps
-from typing import Callable
+from typing import Callable, Optional, Any
 
 
-def log(filename=None):
+def log(filename: Optional[str] = None) -> Callable:
     """Декоратор, который логирует выполнение функции."""
-    def wrapper(func: Callable):
+    def wrapper(func: Callable) -> Callable:
         @wraps(func)
-        def inner(*args, **kwargs):
+        def inner(*args: Any, **kwargs: Any) -> Any:
             log_message = ""
             try:
                 # Пытаемся выполнить функцию
@@ -33,7 +33,7 @@ def log(filename=None):
 
 
 @log(filename="mylog.txt")
-def my_function(x, y):
+def my_function(x: int, y: int) -> int:
     return x + y
 
 
