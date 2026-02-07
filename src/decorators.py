@@ -6,7 +6,7 @@ def log(filename=None):
     """Декоратор, который логирует выполнение функции."""
     def wrapper(func: Callable):
         @wraps(func)
-        def inner (*args, **kwargs):
+        def inner(*args, **kwargs):
             log_message = ""
             try:
                 # Пытаемся выполнить функцию
@@ -15,7 +15,8 @@ def log(filename=None):
                 return result  # Возвращаем результат сразу
             except Exception as e:
                 # Если произошла ошибка, собираем детали
-                log_message = (f"{func.__name__} error: {type(e).__name__}. "
+                log_message = (
+                    f"{func.__name__} error: {type(e).__name__}. "
                     f"Inputs: {args}, {kwargs}")
                 raise e
             finally:
@@ -23,8 +24,8 @@ def log(filename=None):
                     if filename:
                         with open(filename, "a", encoding="utf-8") as f:
                             f.write(log_message + "\n")
-                else:
-                    print(log_message)
+                    else:
+                        print(log_message)
 
         return inner
 
@@ -34,5 +35,6 @@ def log(filename=None):
 @log(filename="mylog.txt")
 def my_function(x, y):
     return x + y
+
 
 my_function(1, 2)

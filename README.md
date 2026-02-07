@@ -47,7 +47,7 @@ result = sort_by_date(data, reverse=True)
 - Для просмотра покрытия тестами : 
 
 `poetry run pytest --cov=src`
-- Покрытие тестами составляет 94% (отчет доступен в папке `htmlcov`).
+- Покрытие тестами составляет 96% (отчет доступен в папке `htmlcov`).
 - Для генерации отчета о покрытии: 
 
 `poetry run pytest --cov=src --cov-report html`.
