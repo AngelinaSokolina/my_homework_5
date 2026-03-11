@@ -20,22 +20,19 @@ def convert_to_rub(transaction: dict) -> float:
     # Если валюта уже в рублях, просто возвращаем сумму
     if currency_code == "RUB":
         return amount
+    # Если любая другая валюта — конвертируем
+    try:
+        # Используем эндпоинт /convert для точности
+        url = f"https://api.apilayer.com/convert?from={currency_code}&to=RUB&amount={amount}"
+        headers = {"apikey": API_KEY}
 
-    # Если валюта USD или EUR, идем в API
-    if currency_code in ["USD", "EUR"]:
-        try:
-            # Используем эндпоинт /convert для точности
-            url = f"https://api.apilayer.com{currency_code}&amount={amount}"
-            headers = {"apikey": API_KEY}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Проверка на ошибки (4xx, 5xx)
 
-            response = requests.get(url, headers=headers)
-            response.raise_for_status()  # Проверка на ошибки (4xx, 5xx)
+        # Превращение JSON-ответ в словарь Python
+        data = response.json()
+        return float(data.get("result", amount)) # Если в JSON нет result, вернем amount
 
-            data = response.json()
-            return float(data.get("result", 0))
-
-        except Exception as e:
-            print(f"Ошибка при обращении к API: {e}")
-            return 0.0
-
-    return 0.0
+    except Exception as e:
+        print(f"Ошибка при обращении к API: {e}")
+        return amount

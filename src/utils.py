@@ -13,7 +13,6 @@ def reception_json(path: str | Path) -> list:
         with open(path, 'r', encoding='utf-8') as file:
             # Пробуем прочитать данные
             data = json.load(file)
-
             # Проверяем, что внутри именно список
             if isinstance(data, list):
                 return data
@@ -22,4 +21,3 @@ def reception_json(path: str | Path) -> list:
     except (json.JSONDecodeError, FileNotFoundError):
         # Если файл пустой, поврежден или не найден — возвращаем пустой список
         return []
-
