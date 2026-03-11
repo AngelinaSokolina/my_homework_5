@@ -33,6 +33,27 @@ def convert_to_rub(transaction: dict) -> float:
         data = response.json()
         return float(data.get("result", amount)) # Если в JSON нет result, вернем amount
 
+    #ConnectionError: проблемы с сетью
+    except requests.exceptions.ConnectionError:
+        print("Connection Error. Please check your network connection.")
+        return amount
+
+    #HTTPError: если полученный ответ от сервера не является корректным
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP Error: {e.response.status_code}. Please check the URL.")
+        return amount
+
+    #TooManyRedirects: если количество перенаправлений запроса превышает максимально допустимое
+    except requests.exceptions.TooManyRedirects:
+        print("Too many redirects. Please check the URL.")
+        return amount
+
+    #RequestException: базовый класс для всех исключений
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+        return amount
+
+    # Другие непредвиденные ошибки
     except Exception as e:
         print(f"Ошибка при обращении к API: {e}")
         return amount
