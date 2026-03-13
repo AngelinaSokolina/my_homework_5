@@ -1,9 +1,10 @@
 from functools import wraps
-from typing import Callable, Optional, Any
+from typing import Any, Callable, Optional
 
 
 def log(filename: Optional[str] = None) -> Callable:
     """Декоратор, который логирует выполнение функции."""
+
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
@@ -15,9 +16,7 @@ def log(filename: Optional[str] = None) -> Callable:
                 return result  # Возвращаем результат сразу
             except Exception as e:
                 # Если произошла ошибка, собираем детали
-                log_message = (
-                    f"{func.__name__} error: {type(e).__name__}. "
-                    f"Inputs: {args}, {kwargs}")
+                log_message = f"{func.__name__} error: {type(e).__name__}. " f"Inputs: {args}, {kwargs}"
                 raise e
             finally:
                 if log_message:

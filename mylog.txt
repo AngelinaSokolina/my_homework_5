@@ -73,3 +73,12 @@ my_function ok
 my_function ok
 my_function ok
 my_function ok
+my_function ok
+my_function ok
+my_function ok
+my_function ok
+my_function ok
+my_function ok
+my_function ok
+my_function ok
+my_function ok

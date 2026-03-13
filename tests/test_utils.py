@@ -1,16 +1,13 @@
 import json
-from unittest.mock import mock_open, patch
+from unittest.mock import mock_open, patch, Mock
 
 from src.utils import reception_json
 
 
-def test_reception_json_success():
-    """ Тестируем успешное чтение файла с корректным JSON-списком """
+def test_reception_json_success() -> None:
+    """Тестируем успешное чтение файла с корректным JSON-списком"""
     # Это те данные, которые "как бы" лежат в файле
-    test_data = [
-        {"id": 1, "amount": 100},
-        {"id": 2, "amount": 200}
-    ]
+    test_data = [{"id": 1, "amount": 100}, {"id": 2, "amount": 200}]
     json_string = json.dumps(test_data)
 
     # СОЗДАЕМ ЯВНЫЙ MOCK ДЛЯ OPEN
@@ -33,9 +30,8 @@ def test_reception_json_success():
             assert isinstance(result, list)  # и это должен быть список
 
 
-
-def test_reception_json_not_list():
-    """ Тестируем случай, когда в файле не список, а словарь """
+def test_reception_json_not_list() -> None:
+    """Тестируем случай, когда в файле не список, а словарь"""
 
     test_data = {"key": "value"}  # это словарь!
 
@@ -46,8 +42,8 @@ def test_reception_json_not_list():
 
 
 @patch("pathlib.Path.exists")
-def test_reception_json_file_not_exists(mock_exists):
-    """ Тестируем случай, когда файл не существует """
+def test_reception_json_file_not_exists(mock_exists: Mock) -> None:
+    """Тестируем случай, когда файл не существует"""
     # Настройка mock: файл НЕ существует
     mock_exists.return_value = False
 
@@ -61,8 +57,8 @@ def test_reception_json_file_not_exists(mock_exists):
     mock_exists.assert_called_once()
 
 
-def test_reception_json_corrupted_file():
-    """ Тестируем случай, когда файл поврежден (невалидный JSON) """
+def test_reception_json_corrupted_file() -> None:
+    """Тестируем случай, когда файл поврежден (невалидный JSON)"""
     # Подделка open, которая вернет невалидный JSON
     mock_file = mock_open(read_data="это не json { [;")
 
@@ -73,8 +69,8 @@ def test_reception_json_corrupted_file():
         assert result == []  # ожидаем пустой список
 
 
-def test_reception_json_empty_file():
-    """ Проверка пустого файла """
+def test_reception_json_empty_file() -> None:
+    """Проверка пустого файла"""
 
     with patch("builtins.open", mock_open(read_data="")):
         # Пустой файл вызовет JSONDecodeError
