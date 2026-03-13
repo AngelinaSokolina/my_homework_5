@@ -100,3 +100,25 @@ def test_convert_connection_err(mock_get):
     result = convert_to_rub(transaction)
 
     assert result == 1021.50
+
+@patch('requests.get')
+def test_convert_no_result(mock_get):
+    """Тест: API вернул ответ без поля result"""
+    transaction = {
+        "operationAmount": {
+            "amount": "500.00",
+            "currency": {"code": "USD"}
+        }
+    }
+
+    # Подготовка поддельного ответа API БЕЗ ПОЛЯ result
+    mock_response = Mock()
+    mock_response.json.return_value = {"info": "some data", "success": True}  # нет result!
+    mock_response.raise_for_status.return_value = None
+    mock_get.return_value = mock_response
+
+    # Вызываем функцию
+    result = convert_to_rub(transaction)
+
+    # Должна вернуть исходную сумму (amount), так как result нет
+    assert result == 500.00
