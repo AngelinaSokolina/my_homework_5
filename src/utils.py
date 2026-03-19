@@ -12,10 +12,11 @@ log_dir = Path(__file__).parent.parent / 'logs'
 # Создание логов
 logger = logging.getLogger('utils')
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(log_dir / 'utils.log', encoding='utf-8')
+file_handler = logging.FileHandler(log_dir / 'utils.log', mode='w', encoding='utf-8')
 file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
+
 
 def reception_json(path: str | Path) -> list:
     """Принимает путь до JSON-файла и возвращает список словарей"""
