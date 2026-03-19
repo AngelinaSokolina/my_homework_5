@@ -6,7 +6,7 @@ file_path = (
     Path(__file__).parent.parent / 'data' / 'operations.json'
 )  # .parent - "выход повыше", то есть сначала вышли из src, потом в корень, а потом по заданному маршруту
 
-# Добавьте в начало файла:
+# Путь логгера
 log_dir = Path(__file__).parent.parent / 'logs'
 
 # Создание логов
@@ -20,6 +20,8 @@ logger.addHandler(file_handler)
 
 def reception_json(path: str | Path) -> list:
     """Принимает путь до JSON-файла и возвращает список словарей"""
+    logger.info(f'Запуск функции обработки пути и возвращения списка словарей')
+
     # Проверяем, существует ли файл вообще
     if not Path(path).exists():
         # Сообщение логера
@@ -41,3 +43,4 @@ def reception_json(path: str | Path) -> list:
         logger.error(f'Файл пустой, поврежден или не найден. Произошла ошибка: {ex}.')
         # Если файл пустой, поврежден или не найден — возвращаем пустой список
         return []
+
