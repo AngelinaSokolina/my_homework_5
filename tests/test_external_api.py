@@ -5,7 +5,7 @@ import requests
 from src.external_api import convert_to_rub
 
 
-def test_convert_to_rub_rub_currency()-> None:
+def test_convert_to_rub_rub_currency() -> None:
     """Тест: если валюта RUB, функция возвращает сумму без API"""
     # Транзакция - это входные данные для функции
     transaction = {"operationAmount": {"amount": "100.50", "currency": {"code": "RUB"}}}
@@ -18,7 +18,7 @@ def test_convert_to_rub_rub_currency()-> None:
 
 
 @patch('requests.get')  # подменяем requests.get на mock_get
-def test_convert_to_rub_usd(mock_get: Mock) -> None:   # mock_get приходит сюда
+def test_convert_to_rub_usd(mock_get: Mock) -> None:  # mock_get приходит сюда
     """Тест: успешная конвертация USD в RUB (с подменой API)"""
     # Транзакция - это входные данные для функции
     transaction = {"operationAmount": {"amount": "1000.00", "currency": {"code": "USD"}}}
