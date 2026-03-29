@@ -25,17 +25,27 @@ def mask_account_card(info: str) -> str:
 
 def get_date(date_string: str) -> str:
     """Функция, которая принимает на вход строку с датой и возвращает её в формате ДД.ММ.ГГГГ"""
-
+    # Если строка пустая
+    if date_string == "":
+        return ""
     # Извлекаем дату до символа 'T' и отсекаем время
     date_part = date_string.split("T")[0]
 
-    # Разрезаем эту дату по дефису и получим год, месяц и день
-    parts = date_part.split("-")
+    # Из этого кусочка вынимаем только цифры
+    only_digits = ""
+    for char in date_part:
+        if char.isdigit():
+            only_digits = only_digits + char
+    # Проверяем, хватит ли нам цифр для даты (ГГГГММДД — это 8 цифр)
+    if len(only_digits) < 8:
+        return ""
 
-    # Собираем элементы в обратном порядке через точку
-    formatted_date = f"{parts[2]}.{parts[1]}.{parts[0]}"
+    # Режем по индексам (теперь там точно только дата!)
+    year = only_digits[0:4]
+    month = only_digits[4:6]
+    day = only_digits[6:8]
 
-    return formatted_date
+    return f"{day}.{month}.{year}"
 
 
 # Проверка, чтобы запустить файлы и проверить

@@ -16,7 +16,7 @@ def filter_by_state(data: list[dict[str, Any]], state: str = 'EXECUTED') -> list
 
 def sort_by_date(data: list[dict[str, Any]], reverse: bool = True) -> list[dict[str, Any]]:
     """
-    Сортирует список словарей по ключу 'date'.
+    Функция для сортировки списка словарей по ключу 'date'.
     По умолчанию сортировка идет от новых к старым (убывание).
     """
     # sorted — берет список data и делает его копию, чтобы отсортировать

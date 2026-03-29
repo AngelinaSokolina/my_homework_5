@@ -40,12 +40,24 @@ from src.processing import sort_by_date
 result = sort_by_date(data, reverse=True)
 ```
 ## Тестирование
+В проекте реализовано модульное тестирование с использованием `pytest`.
+- Для запуска тестов используйте команду: 
 
-Проект поддерживает проверку типов через mypy и соблюдение стиля PEP 8 через flake8.
+`poetry run pytest`.
+- Для просмотра покрытия тестами : 
+
+`poetry run pytest --cov=src`
+- Покрытие тестами составляет 94% (отчет доступен в папке `htmlcov`).
+- Для генерации отчета о покрытии: 
+
+`poetry run pytest --cov=src --cov-report html`.
+- Проект поддерживает проверку типов через mypy и соблюдение стиля PEP 8 через flake8.
 Для запуска проверок используйте:
 ```
 poetry run flake8 src
+poetry run flake8 tests
 poetry run mypy src
+poetry run mypy tests
 ```
 
 ## Как сохранить это на GitHub:
