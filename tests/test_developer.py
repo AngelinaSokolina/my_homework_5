@@ -1,10 +1,7 @@
 import pandas as pd
 
 # Импортируем функции из модуля developer
-from financial_transactions.developer import (
-    count_by_status,
-    get_currency_rating
-)
+from financial_transactions.developer import count_by_status, get_currency_rating
 
 
 def test_count_by_status() -> None:
@@ -14,9 +11,7 @@ def test_count_by_status() -> None:
     по статусам EXECUTED, PENDING, CANCELED.
     """
     # Тестовый DataFrame с известными данными
-    test_data = pd.DataFrame({
-        'state': ['EXECUTED', 'PENDING', 'CANCELED', 'EXECUTED', 'PENDING']
-    })
+    test_data = pd.DataFrame({'state': ['EXECUTED', 'PENDING', 'CANCELED', 'EXECUTED', 'PENDING']})
 
     # Вызов функции
     result = count_by_status(test_data)
@@ -43,9 +38,7 @@ def test_get_currency_rating() -> None:
     Проверяет, что функция возвращает топ-N самых частых валют.
     """
     # Тестовый DataFrame с повторяющимися кодами валют
-    test_data = pd.DataFrame({
-        'currency_code': ['RUB', 'USD', 'RUB', 'EUR', 'RUB', 'USD', 'RUB', 'EUR', 'RUB']
-    })
+    test_data = pd.DataFrame({'currency_code': ['RUB', 'USD', 'RUB', 'EUR', 'RUB', 'USD', 'RUB', 'EUR', 'RUB']})
     # RUB встречается 5 раз, USD — 2 раза, EUR — 2 раза
 
     # Вызов функции с top=2
@@ -63,4 +56,3 @@ def test_get_currency_rating() -> None:
 
     # Проверяем, что второе место — USD (или EUR, если порядок другой)
     assert result.iloc[1] == 2
-

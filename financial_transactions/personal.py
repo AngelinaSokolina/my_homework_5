@@ -1,11 +1,13 @@
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 """Пользователь вводит свой id, чтобы посмотреть информацию о счете"""
 
 df = pd.read_excel(Path(__file__).parent / 'transactions_excel.xlsx')
 
-def speak_question()-> None:
+
+def speak_question() -> None:
     while True:
         question = input("Если вы хотите узнать информацию о счете, введите свой id: ")
         try:

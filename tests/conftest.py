@@ -1,6 +1,7 @@
+from typing import Any
+
 import pytest
 
-from typing import Any
 
 # _________________________________ДЛЯ test_processing_________________________________
 @pytest.fixture
