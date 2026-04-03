@@ -1,29 +1,28 @@
 from pathlib import Path
-
 import pandas as pd
 
 """Разработчик или сотрудник смотрит инфомацию по счетам для сводки и статистики"""
 
-# Функция загрузки данных из csv
 
+def load_data(file_path: str | Path) -> list[dict]:
+    """Загружает данные из CSV и возвращает список словарей"""
+    df = pd.read_csv(file_path, sep=';')
+    return df.to_dict('records')
 
-def load_data(file_path: str | Path) -> pd.DataFrame:
-    df_clin = pd.read_csv(file_path, sep=';')
-    return df_clin
-
+def get_dataframe(file_path: str | Path) -> pd.DataFrame:
+    """Загружает данные из CSV и возвращает DataFrame (для аналитики)"""
+    return pd.read_csv(file_path, sep=';')
 
 # Вызов функции
 df = load_data(Path(__file__).parent / 'transactions.csv')
 
-
-"""Какие вообще есть столбцы в документе"""
+# Какие вообще есть столбцы в документе
 # print(df.columns.tolist())
 
 
-"""Сколько операций выполнено, в ожидании, отменены"""
-
-
-def count_by_status(df: pd.DataFrame) -> dict:
+def count_by_status(data: list[dict]) -> dict:
+    """Сколько операций выполнено, в ожидании, отменены"""
+    df = pd.DataFrame(data)
     return {
         'Выполненных операций': len(df[df.state == 'EXECUTED']),
         'Операций "в ожидании"': len(df[df.state == 'PENDING']),
@@ -31,15 +30,15 @@ def count_by_status(df: pd.DataFrame) -> dict:
     }
 
 
-# Уникальные значения в столбце description
-unique_list = df.description.unique()
 
-"""Сколько и какие именно операции: EXECUTED, PENDING, CANCELED"""
-
-
-def count_by_description(df: pd.DataFrame, status: str) -> dict:
+def count_by_description(data: list[dict], status: str) -> dict:
+    """Сколько и какие именно операции: EXECUTED, PENDING, CANCELED"""
+    df = pd.DataFrame(data)
     # Фильтр по переданному статусу
     filtered_df = df[df.state == status]
+
+    # Уникальные значения в столбце description
+    unique_list = df.description.unique()
 
     # Общее количество
     total = len(filtered_df)
@@ -62,17 +61,18 @@ def count_by_description(df: pd.DataFrame, status: str) -> dict:
     }
 
 
-"""Рейтинг валют в денежных операциях"""
-
-
-def get_currency_rating(df: pd.DataFrame, top: int) -> pd.Series:
-    currency_rating = df['currency_code'].value_counts().head(top)
-    return currency_rating
+def get_currency_rating(data: list[dict], top: int = 10) -> pd.Series:
+    """Рейтинг валют в денежных операциях"""
+    df = pd.DataFrame(data)
+    return df['currency_code'].value_counts().head(top)
 
 
 if __name__ == '__main__':
-    print(count_by_status(df))
-    print(count_by_description(df, 'EXECUTED'))
-    print(count_by_description(df, 'PENDING'))
-    print(count_by_description(df, 'CANCELED'))
-    print(get_currency_rating(df, top=10))
+    data = load_data(Path(__file__).parent / 'transactions.csv')
+    df = pd.DataFrame(data)
+
+    print(count_by_status(data))
+    print(count_by_description(data, 'EXECUTED'))
+    print(count_by_description(data, 'PENDING'))
+    print(count_by_description(data, 'CANCELED'))
+    print(get_currency_rating(data, top=10))
