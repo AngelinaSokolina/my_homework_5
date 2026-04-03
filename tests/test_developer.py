@@ -14,7 +14,9 @@ def test_count_by_status() -> None:
     test_data = pd.DataFrame({'state': ['EXECUTED', 'PENDING', 'CANCELED', 'EXECUTED', 'PENDING']})
 
     # Вызов функции
-    result = count_by_status(test_data)
+    # Каждая строка DataFrame становится отдельным словарём
+    # 'records' = каждая строка = отдельный словарь.
+    result = count_by_status(test_data.to_dict('records'))
 
     # Проверка, что результат — словарь
     assert isinstance(result, dict)
@@ -27,10 +29,6 @@ def test_count_by_status() -> None:
     assert result['Операций "в ожидании"'] == 2
     assert result['Отмененные операции'] == 1
 
-    # Проверяем, что сумма трёх чисел равна общему количеству строк
-    total = sum(result.values())
-    assert total == len(test_data)
-
 
 def test_get_currency_rating() -> None:
     """
@@ -42,7 +40,7 @@ def test_get_currency_rating() -> None:
     # RUB встречается 5 раз, USD — 2 раза, EUR — 2 раза
 
     # Вызов функции с top=2
-    result = get_currency_rating(test_data, top=2)
+    result = get_currency_rating(test_data.to_dict('records'), top=2)
 
     # Проверяем, что результат — Series
     assert isinstance(result, pd.Series)

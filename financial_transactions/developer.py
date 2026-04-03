@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pandas as pd
 
 """Разработчик или сотрудник смотрит инфомацию по счетам для сводки и статистики"""
@@ -9,9 +10,11 @@ def load_data(file_path: str | Path) -> list[dict]:
     df = pd.read_csv(file_path, sep=';')
     return df.to_dict('records')
 
+
 def get_dataframe(file_path: str | Path) -> pd.DataFrame:
     """Загружает данные из CSV и возвращает DataFrame (для аналитики)"""
     return pd.read_csv(file_path, sep=';')
+
 
 # Вызов функции
 df = load_data(Path(__file__).parent / 'transactions.csv')
@@ -28,7 +31,6 @@ def count_by_status(data: list[dict]) -> dict:
         'Операций "в ожидании"': len(df[df.state == 'PENDING']),
         'Отмененные операции': len(df[df.state == 'CANCELED']),
     }
-
 
 
 def count_by_description(data: list[dict], status: str) -> dict:
@@ -69,8 +71,6 @@ def get_currency_rating(data: list[dict], top: int = 10) -> pd.Series:
 
 if __name__ == '__main__':
     data = load_data(Path(__file__).parent / 'transactions.csv')
-    df = pd.DataFrame(data)
-
     print(count_by_status(data))
     print(count_by_description(data, 'EXECUTED'))
     print(count_by_description(data, 'PENDING'))
