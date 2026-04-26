@@ -2,6 +2,12 @@ from pathlib import Path
 import pandas as pd
 import re
 
+def excel_data(file_path: str | Path) -> list[dict]:
+    """Загружает данные из Excel и возвращает список словарей."""
+    df = pd.read_excel(file_path)
+    data = df.to_dict('records')
+    return data
+
 
 def process_bank_search(data:list[dict], search:str)->list[dict]:
     """Функция для поиска банковских операций"""
@@ -13,12 +19,6 @@ def process_bank_search(data:list[dict], search:str)->list[dict]:
 
     return finance_dict
 
-def excel_data(file_path: str | Path) -> list[dict]:
-    """Загружает данные из Excel и возвращает список словарей."""
-    df = pd.read_excel(file_path)
-    data = df.to_dict('records')
-    return data
-
 
 if __name__ == '__main__':
     # Загрузка данных
@@ -28,6 +28,4 @@ if __name__ == '__main__':
     result = process_bank_search(data, "Перевод")
 
     # Результат
-    print(f"Найдено {len(result)} операций:")
-    for item in result:
-        print(item)
+    print(f"Найдено {len(result)} операций")
