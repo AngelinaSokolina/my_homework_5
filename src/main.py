@@ -8,7 +8,7 @@ from financial_transactions.developer import load_data  # для CSV
 from src.bank_search import excel_data  # для Excel
 
 
-def load_transactions(file_type: int) -> None | list | list[dict]:
+def load_transactions(file_type: int) -> list[dict] | None:
     """ Загружает транзакции в зависимости от выбора пользователя:
      1 - JSON, 2 - CSV, 3 - XLSX """
 
@@ -55,6 +55,21 @@ def filter_by_status(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]
             print(f"Статус операции \"{status_input}\" недоступен.")
 
 
+def format_date(date_str: str) -> str:
+    """Функция для извлечения даты из транзакции в формат DD.MM.YYYY"""
+    if not date_str:
+        return "Дата не указана"
+
+    parts = re.findall(r'\d+', date_str)
+    if len(parts) == 3:
+        # Если первая часть = 4 цифры (YYYY.MM.DD), то меняем порядок
+        if len(parts[0]) == 4:
+            return f"{parts[2]}.{parts[1]}.{parts[0]}"
+        else:
+            return f"{parts[0]}.{parts[1]}.{parts[2]}"
+    return str(date_str)
+
+
 def ask_sort(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Сортировка по дате"""
 
@@ -74,23 +89,7 @@ def ask_sort(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
                 else:
                     print("Пожалуйста, введите 'по возрастанию' или 'по убыванию'")
 
-            # Функция для извлечения даты из транзакции в формат DD.MM.YYYY
-            def get_date(transaction)-> str:
-                date_str = str(transaction.get('date', '')).strip()
-                if not date_str:
-                    return "Дата не указана"
-
-                parts = re.findall(r'\d+', date_str)
-                if len(parts) == 3:
-                    # Если первая часть = 4 цифры (YYYY.MM.DD) → меняем порядок
-                    if len(parts[0]) == 4:
-                        return f"{parts[2]}.{parts[1]}.{parts[0]}"
-                    else:
-                        return f"{parts[0]}.{parts[1]}.{parts[2]}"
-                return date_str
-
-
-            sorted_transactions = sorted(transactions, key=get_date, reverse=reverse)
+            sorted_transactions = sorted(transactions, key=lambda tr: format_date(tr.get('date', '')), reverse=reverse)
             print("Операции отсортированы.")
             return sorted_transactions
 
@@ -176,7 +175,7 @@ def display_transactions(transactions: List[Dict[str, Any]]) -> None:
 
     for tr in transactions:
         # Дата
-        date = ask_sort(tr.get('date', 'Дата не указана'))
+        date = format_date(tr.get('date', 'Дата не указана'))
 
         # Описание
         description = tr.get('description', 'Без описания')
@@ -192,7 +191,7 @@ def display_transactions(transactions: List[Dict[str, Any]]) -> None:
             to_masked = mask_card_number(to_person)
             transfer_info = f"{from_masked} -> {to_masked}"
         else:
-            transfer_info = "Не найдено ни одной транзакции, подходящей под ваши условия фильтрации"
+            transfer_info = "Данные о переводе отсутствуют"
 
         # Сумма и валюта
         amount = tr.get('amount', 0)
