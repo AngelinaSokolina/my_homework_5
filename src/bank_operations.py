@@ -1,6 +1,8 @@
 import re
 from pathlib import Path
+
 import pandas as pd
+
 
 def excel_data_operation(file_path: str | Path) -> list[dict]:
     """Загружает данные из Excel и возвращает список словарей"""
@@ -9,7 +11,7 @@ def excel_data_operation(file_path: str | Path) -> list[dict]:
     return data
 
 
-def process_bank_operations(data:list[dict], categories:list)->dict:
+def process_bank_operations(data: list[dict], categories: list) -> dict:
     """Функция для группировки по категориям"""
     ok_dict = {categ: 0 for categ in categories}
     for row in data:
@@ -19,7 +21,6 @@ def process_bank_operations(data:list[dict], categories:list)->dict:
                 ok_dict[categ] += 1
 
     return ok_dict
-
 
 
 if __name__ == '__main__':

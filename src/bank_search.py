@@ -1,6 +1,8 @@
-from pathlib import Path
-import pandas as pd
 import re
+from pathlib import Path
+
+import pandas as pd
+
 
 def excel_data(file_path: str | Path) -> list[dict]:
     """Загружает данные из Excel и возвращает список словарей."""
@@ -9,7 +11,7 @@ def excel_data(file_path: str | Path) -> list[dict]:
     return data
 
 
-def process_bank_search(data:list[dict], search:str)->list[dict]:
+def process_bank_search(data: list[dict], search: str) -> list[dict]:
     """Функция для поиска банковских операций"""
     finance_dict = []
     for row in data:

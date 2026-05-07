@@ -1,16 +1,17 @@
 import re
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
-# Импортируем функции из предыдущих модулей
-from src.utils import reception_json  # для JSON
 from financial_transactions.developer import load_data  # для CSV
 from src.bank_search import excel_data  # для Excel
 
+# Импортируем функции из предыдущих модулей
+from src.utils import reception_json  # для JSON
+
 
 def load_transactions(file_type: int) -> list[dict] | None:
-    """ Загружает транзакции в зависимости от выбора пользователя:
-     1 - JSON, 2 - CSV, 3 - XLSX """
+    """Загружает транзакции в зависимости от выбора пользователя:
+    1 - JSON, 2 - CSV, 3 - XLSX"""
 
     base_path = Path(__file__).parent.parent
 
@@ -33,14 +34,16 @@ def load_transactions(file_type: int) -> list[dict] | None:
 
 
 def filter_by_status(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """ Фильтрует транзакции по статусу, запрашивая его у пользователя """
+    """Фильтрует транзакции по статусу, запрашивая его у пользователя"""
 
     valid_statuses = ['EXECUTED', 'CANCELED', 'PENDING']
 
     while True:
-        print("""
-Введите статус, по которому необходимо выполнить фильтрацию. 
-Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING""")
+        print(
+            """
+Введите статус, по которому необходимо выполнить фильтрацию.
+Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING"""
+        )
         status_input = input("Ваш выбор: ").strip()
 
         # Приводим к верхнему регистру для сравнения
@@ -60,14 +63,31 @@ def format_date(date_str: str) -> str:
     if not date_str:
         return "Дата не указана"
 
+    date_str = str(date_str)
+
+    # Убираем время, если есть
+    if 'T' in date_str:
+        date_str = date_str.split('T')[0]
+    if ' ' in date_str:
+        date_str = date_str.split(' ')[0]
+
     parts = re.findall(r'\d+', date_str)
+
     if len(parts) == 3:
         # Если первая часть = 4 цифры (YYYY.MM.DD), то меняем порядок
         if len(parts[0]) == 4:
             return f"{parts[2]}.{parts[1]}.{parts[0]}"
         else:
             return f"{parts[0]}.{parts[1]}.{parts[2]}"
-    return str(date_str)
+
+    # Если не 3 части, возможно дата без разделителей типа 20241225
+    if len(parts) == 1 and len(parts[0]) == 8:
+        year = parts[0][:4]
+        month = parts[0][4:6]
+        day = parts[0][6:8]
+        return f"{day}.{month}.{year}"
+
+    return date_str
 
 
 def ask_sort(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -78,7 +98,7 @@ def ask_sort(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
         if answer in ['да']:
             while True:
-             # Только если пользователь сказал "да" — спрашиваем направление
+                # Только если пользователь сказал "да" — спрашиваем направление
                 direction = input("\nОтсортировать по возрастанию или по убыванию? ").strip().lower()
                 if direction in ['по возрастанию']:
                     reverse = False
@@ -117,8 +137,9 @@ def ask_ruble_only(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 def ask_filter_by_description(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Спрашивает, нужно ли отфильтровать по слову в описании"""
     while True:
-        answer_word = input(
-            "\nОтфильтровать список транзакций по определенному слову в описании? Да/Нет: ").strip().lower()
+        answer_word = (
+            input("\nОтфильтровать список транзакций по определенному слову в описании? Да/Нет: ").strip().lower()
+        )
 
         if answer_word in ['да']:
             while True:  # цикл для повторного поиска
@@ -149,7 +170,6 @@ def ask_filter_by_description(transactions: List[Dict[str, Any]]) -> List[Dict[s
             return transactions
         else:
             print("Пожалуйста, введите 'да' или 'нет'")
-
 
 
 def mask_card_number(card_str: str) -> str:
@@ -207,12 +227,14 @@ def display_transactions(transactions: List[Dict[str, Any]]) -> None:
 
 def main() -> None:
     """Главная функция программы"""
-    print("""\nПривет! Добро пожаловать в программу работы с банковскими транзакциями
+    print(
+        """\nПривет! Добро пожаловать в программу работы с банковскими транзакциями
     Выберите необходимый пункт меню:
     1. Получить информацию о транзакциях из JSON-файла
     2. Получить информацию о транзакциях из CSV-файла
     3. Получить информацию о транзакциях из XLSX-файла
-    """)
+    """
+    )
     while True:
         try:
             answer = int(input("Ваш выбор: "))
@@ -232,7 +254,6 @@ def main() -> None:
 
     # Фильтрация по статусу
     transactions = filter_by_status(transactions)
-
 
     # Сортировка по дате
     transactions = ask_sort(transactions)
