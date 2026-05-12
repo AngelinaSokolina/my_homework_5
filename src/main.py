@@ -174,7 +174,13 @@ def ask_filter_by_description(transactions: List[Dict[str, Any]]) -> List[Dict[s
 
 def mask_card_number(card_str: str) -> str:
     """Маскирует номер карты (показывает только последние 4 цифры)"""
-    if not card_str:
+    # Преобразуем в строку, если пришло не строковое значение
+    if card_str is None:
+        return "Номер карты не найден"
+
+    card_str = str(card_str)
+
+    if not card_str or card_str == 'nan':
         return "Номер карты не найден"
 
     # Ищем 4 цифры в конце (последние 4 цифры карты/счёта)
