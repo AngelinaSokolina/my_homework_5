@@ -1,4 +1,4 @@
-import tempfile     # Это модуль для создания временных файлов и папок
+import tempfile  # Это модуль для создания временных файлов и папок
 from pathlib import Path
 from typing import Any
 
@@ -6,8 +6,8 @@ import pandas as pd
 
 from src.bank_operations import excel_data_operation, process_bank_operations
 
-
 # ТЕСТЫ excel_data_operation
+
 
 def test_excel_data_operation_returns_list() -> None:
     """Проверяет, что функция возвращает список"""
@@ -50,6 +50,7 @@ def test_excel_data_operation_returns_dicts() -> None:
 
 
 # ТЕСТЫ process_bank_operations
+
 
 def test_process_bank_operations_returns_dict() -> None:
     """Проверяет, что функция возвращает словарь"""

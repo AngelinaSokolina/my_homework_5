@@ -1,4 +1,4 @@
-import tempfile     # Это модуль для создания временных файлов и папок
+import tempfile  # Это модуль для создания временных файлов и папок
 from pathlib import Path
 from typing import Any
 
@@ -6,8 +6,8 @@ import pandas as pd
 
 from src.bank_search import excel_data, process_bank_search
 
-
 # ТЕСТЫ ДЛЯ excel_data
+
 
 def test_excel_data_returns_list() -> None:
     """Проверяет, что функция возвращает список"""
@@ -61,6 +61,7 @@ def test_excel_data_correct_values() -> None:
 
 # ТЕСТЫ ДЛЯ process_bank_search
 
+
 def test_process_bank_search_returns_list() -> None:
     """Проверяет, что функция возвращает список"""
     data: list[dict[str, Any]] = [{"description": "Перевод организации", "amount": 100}]
@@ -85,7 +86,7 @@ def test_process_bank_search_case_insensitive() -> None:
     """Проверяет, что поиск не зависит от регистра"""
     data: list[dict[str, Any]] = [
         {"description": "ПЕРЕВОД организации", "amount": 100},
-        {"description": "перевод с карты", "amount": 200}
+        {"description": "перевод с карты", "amount": 200},
     ]
     result: list[dict[str, Any]] = process_bank_search(data, "Перевод")
     assert len(result) == 2
@@ -112,7 +113,7 @@ def test_process_bank_search_missing_description() -> None:
     """Проверяет обработку транзакций без поля description"""
     data: list[dict[str, Any]] = [
         {"amount": 100},  # нет description
-        {"description": "Перевод организации", "amount": 200}
+        {"description": "Перевод организации", "amount": 200},
     ]
     result: list[dict[str, Any]] = process_bank_search(data, "Перевод")
     assert len(result) == 1

@@ -8,6 +8,8 @@ import pandas as pd
 def load_data(file_path: str | Path) -> list[dict]:
     """Загружает данные из CSV и возвращает список словарей"""
     df = pd.read_csv(file_path, sep=';')
+    # Заполняем пустые значения
+    df = df.fillna('')
     return df.to_dict('records')
 
 

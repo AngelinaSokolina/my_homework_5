@@ -9,6 +9,21 @@ from src.bank_search import excel_data  # для Excel
 from src.utils import reception_json  # для JSON
 
 
+# Универсальная функция для получения валюты из транзакции
+def get_currency(transaction: dict) -> str:
+    """Возвращает код валюты из транзакции (работает и с JSON, и с CSV)"""
+    # Вариант 1: для CSV (поле на верхнем уровне)
+    if 'currency_code' in transaction:
+        return str(transaction.get('currency_code', '')).upper()
+
+    # Вариант 2: для JSON (внутри operationAmount)
+    if 'operationAmount' in transaction:
+        currency = transaction['operationAmount'].get('currency', {})
+        return str(currency.get('code', '')).upper()
+
+    return ''
+
+
 def load_transactions(file_type: int) -> list[dict] | None:
     """Загружает транзакции в зависимости от выбора пользователя:
     1 - JSON, 2 - CSV, 3 - XLSX"""
@@ -128,7 +143,7 @@ def ask_ruble_only(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             # Проверяем разные варианты названия валюты
             filtered = []
             for tr in transactions:
-                currency = str(tr.get('currency_code', tr.get('currency', ''))).upper()
+                currency = get_currency(tr)
                 if currency == 'RUB':
                     filtered.append(tr)
             return filtered
@@ -188,12 +203,47 @@ def mask_card_number(card_str: str) -> str:
     if not card_str or card_str == 'nan':
         return "Номер карты не найден"
 
-    # Ищем 4 цифры в конце (последние 4 цифры карты/счёта)
+    # Если это счёт (начинается со слова "Счет")
+    if 'счет' in card_str.lower() or 'счёт' in card_str.lower():
+        match = re.search(r'(\d{4})$', card_str)
+        if match:
+            return f"Счет **{match.group(1)}"
+        return card_str
+
+    # Иначе считаем, что это карта
+    # Ищем 4 цифры в конце (последние 4 цифры карты)
     match = re.search(r'(\d{4})$', card_str)
     if match:
         last_four = match.group(1)
-        return f"**{last_four}"
+        # Маскируем первые цифры
+        return f"**** **** **** {last_four}"
     return card_str
+
+
+def get_amount_and_currency(transaction: dict) -> tuple[float, str]:
+    """Возвращает сумму и код валюты из транзакции"""
+    # Для CSV
+    if 'amount' in transaction and 'currency_code' in transaction:
+        amount = transaction.get('amount', 0)
+        # Преобразуем в float, если пришло числом
+        try:
+            amount = float(amount)
+        except (ValueError, TypeError):
+            amount = 0.0
+        return amount, transaction.get('currency_code', '')
+
+    # Для JSON
+    if 'operationAmount' in transaction:
+        op_amount = transaction['operationAmount']
+        amount = op_amount.get('amount', 0)
+        try:
+            amount = float(amount)
+        except (ValueError, TypeError):
+            amount = 0.0
+        currency = op_amount.get('currency', {}).get('code', '')
+        return amount, currency
+
+    return 0.0, ''
 
 
 def display_transactions(transactions: List[Dict[str, Any]]) -> None:
@@ -225,8 +275,7 @@ def display_transactions(transactions: List[Dict[str, Any]]) -> None:
             transfer_info = "Данные о переводе отсутствуют"
 
         # Сумма и валюта
-        amount = tr.get('amount', 0)
-        currency = tr.get('currency_code', 'RUB')
+        amount, currency = get_amount_and_currency(tr)
         currency_symbol = "руб." if currency == 'RUB' else currency
 
         # Вывод
