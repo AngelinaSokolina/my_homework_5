@@ -125,7 +125,12 @@ def ask_ruble_only(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         answer_rub = input("\nВыводить только рублевые транзакции? Да/Нет: ").strip().lower()
 
         if answer_rub in ['да']:
-            filtered = [tr for tr in transactions if tr.get('currency_code', '') == 'RUB']
+            # Проверяем разные варианты названия валюты
+            filtered = []
+            for tr in transactions:
+                currency = str(tr.get('currency_code', tr.get('currency', ''))).upper()
+                if currency == 'RUB':
+                    filtered.append(tr)
             return filtered
 
         elif answer_rub in ['нет']:
